@@ -2,6 +2,7 @@ package com.masonliu.aroutermodular_app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,6 +10,7 @@ import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.masonliu.aroutermodular_base.libplus.arouter.ByeProvider;
 import com.masonliu.aroutermodular_base.libplus.arouter.HelloProvider;
+import com.masonliu.aroutermodular_module1.HelloProviderImpl;
 
 public class MainActivity extends AppCompatActivity {
     @Autowired
@@ -36,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
         // 2. 使用依赖查找的方式发现服务，主动去发现服务并使用，下面两种方式分别是byName和byType
         helloProvider3 = ARouter.getInstance().navigation(HelloProvider.class);
         helloProvider4 = (HelloProvider) ARouter.getInstance().build("/service/hello").navigation();
-        helloProvider3.sayHello("Vergil");
-        helloProvider4.sayHello("Vergil");
+        Log.e("eeeeeeeeeeeeee", helloProvider3.sayHello("Vergil1111"));
+        Log.e("eeeeeeeeeeeeee", helloProvider4.sayHello("Vergil2222"));
 
         TextView textView1 = findViewById(R.id.textView1);
         textView1.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +57,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        byeProvider.sayBye("ssssss");
+        //byeProvider.sayBye("ssssss");
     }
 }
