@@ -2,6 +2,7 @@ package com.masonliu.aroutermodular_base.libplus.arouter;
 
 import android.app.Activity;
 import android.app.Application;
+import android.net.Uri;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 
@@ -12,22 +13,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- 1、模块页面跳转：通过指定path实现
- 2、模块间调用：通过在Router Module里注册Provider实现
- 3、模块间调用：为避免繁琐的增加Provider，可以使用CommonProvider
- 4、模块间调用：还可以使用反射进行调用，但不推荐这样做，这样就没有模块暴露服务的契约了，
- 当被调用者发生改变，则使用反射的调用方无法使用。
+ * Created by masonliu on 2017/4/13.
  */
+
 public class RouterUtil {
     public static void init(Application application) {
+        //if (AppUtil.getBuidDebugable()) {
+        ARouter.openLog();
+        ARouter.openDebug();
+        ARouter.printStackTrace();
+        //}
         ARouter.init(application);
     }
 
-    private static Map<String, Object> Provider(Activity source, String path) {
+    public static Map<String, Object> go(Activity source, String pathQuery) {
         try {
-            URL url = new URL("http://app" + path);
-            CommonProvider routerService = (CommonProvider) ARouter.getInstance().build(url.getPath()).navigation();
-            return routerService.doAction(source, url.getPath(), getUrlParams(url));
+            URL url = new URL("http://native" + pathQuery);
+            Uri uri = Uri.parse(url.toString());
+            RouterProvider routerService = (RouterProvider) ARouter.getInstance().build(uri).navigation();
+            if (routerService != null) {
+                return routerService.doAction(source, url.getPath(), getUrlParams(url));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
