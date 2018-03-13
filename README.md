@@ -6,7 +6,7 @@
 
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/1.png)
 
-# 二、路由功能介绍
+# 二、模块化需求介绍
 ### 1、页面跳转
 通过指定path实现
 ### 2、模块调用
@@ -16,6 +16,7 @@
 4、还可以使用反射进行调用，但不推荐这样做，这样模块就没有暴露服务的契约了，当被调用者发生改变，则使用反射的调用方无法使用。
 
 # 三、注册服务
+>各个模块如果想对外提供某些功能，则需要向服务中心注册自己的提供的服务
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/2.png)
 
 - 自动注册：router是服务注册中心，这里的path-class的map表是router帮我们自动生成的。
@@ -23,6 +24,7 @@
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/3.png)
 
 # 四、发现服务(都需要强依赖Class，无法应用在模块化解耦上)
+>一个模块想使用其他模块的功能则需要到服务中心查找服务
 - 使用依赖注入的方式发现服务,通过注解标注字段,即可使用，无需主动获取
 ```java
 @Autowired
@@ -41,7 +43,7 @@ helloProvider3 = ARouter.getInstance().navigation(HelloProvider.class);
 helloProvider4 = (HelloProvider) ARouter.getInstance().build("/service/hello").navigation();
 ```
 
-# 五、去除依赖发现服务，实现路由功能
+# 五、去除依赖发现服务，实现模块化需求
 ```java
                 // 1. 简单跳转
                 RouterUtil.go("/test/activity");
