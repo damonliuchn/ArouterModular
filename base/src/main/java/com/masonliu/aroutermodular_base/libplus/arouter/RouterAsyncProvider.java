@@ -11,11 +11,11 @@ import java.util.Map;
 /**
  * Created by masonliu on 2017/4/13.
  */
-public abstract class RouterProvider implements IProvider {
+public abstract class RouterAsyncProvider implements IProvider {
     private Context context;
 
     @Nullable
-    public abstract Map<String, Object> doAction(@Nullable Activity activity, String path, Map<String, String> params);
+    public abstract void doAction(@Nullable Activity activity, String path, Map<String, String> params, RouterAsyncCallbackWrapper callback);
 
     @Override
     public void init(Context context) {

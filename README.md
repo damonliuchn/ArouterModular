@@ -6,7 +6,7 @@
 
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/1.png)
 
-# 二、路由功能
+# 二、路由功能介绍
 ### 1、页面跳转
 通过指定path实现
 ### 2、模块调用
@@ -22,7 +22,7 @@
 - 手动注册：在通过引用provider方式使用时，需要将provider接口手动放在base或router module里，我们称之为手动注册
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/3.png)
 
-# 四、发现服务
+# 四、发现服务(都需要强依赖Class，无法应用在模块化解耦上)
 - 使用依赖注入的方式发现服务,通过注解标注字段,即可使用，无需主动获取
 ```java
 @Autowired
@@ -39,6 +39,49 @@ helloProvider2.sayHello("Vergil");
 ```java
 helloProvider3 = ARouter.getInstance().navigation(HelloProvider.class);
 helloProvider4 = (HelloProvider) ARouter.getInstance().build("/service/hello").navigation();
+```
+
+# 五、去除依赖发现服务，实现路由功能
+```java
+                // 1. 简单跳转
+                RouterUtil.go("/test/activity");
+                // 2. 跳转携带参数
+                RouterUtil.goWith("/test/activity")
+                        .withLong("longKey", 0x555555L)
+                        .withString("stringKey", "66666")
+                        .navigation();
+                // 3. 跳转携带参数并有ActivityResult
+                RouterUtil.goWith("/test/activity")
+                        .withString("data", "app传过来的内容")
+                        .navigation(MainActivity.this, 100);
+                // 4. 同步调用
+                Map<String, Object> res = RouterUtil.exec(MainActivity.this, "/service/hello");
+                String resV = (String) res.get("one");
+                Toast.makeText(view.getContext(), resV, Toast.LENGTH_LONG).show();
+
+                // 5. 异步调用
+                RouterUtil.execAsync(MainActivity.this, "/service/hello",
+                        new RouterAsyncCallback() {
+                            @Override
+                            public void onStart() {
+
+                            }
+
+                            @Override
+                            public void onSuccess(@Nullable Map<String, Object> result) {
+
+                            }
+
+                            @Override
+                            public void onFailed(@Nullable Map<String, Object> error) {
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        });
 ```
 
 ---

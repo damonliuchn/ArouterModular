@@ -1,62 +1,69 @@
 package com.masonliu.aroutermodular_app;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.alibaba.android.arouter.facade.annotation.Autowired;
-import com.alibaba.android.arouter.launcher.ARouter;
-import com.masonliu.aroutermodular_base.libplus.arouter.ByeProvider;
-import com.masonliu.aroutermodular_base.libplus.arouter.HelloProvider;
-import com.masonliu.aroutermodular_module1.HelloProviderImpl;
+import com.masonliu.aroutermodular_base.libplus.arouter.RouterAsyncCallback;
+import com.masonliu.aroutermodular_base.libplus.arouter.RouterUtil;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    @Autowired
-    HelloProvider helloProvider;
-    @Autowired(name = "/service/hello")
-    HelloProvider helloProvider2;
-
-    HelloProvider helloProvider3;
-
-    HelloProvider helloProvider4;
-
-    @Autowired
-    ByeProvider byeProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // 1. (推荐)使用依赖注入的方式发现服务,通过注解标注字段,即可使用，无需主动获取
-        // Autowired注解中标注name之后，将会使用byName的方式注入对应的字段，不设置name属性，会默认使用byType的方式发现服务(当同一接口有多个实现的时候，必须使用byName的方式发现服务)
-        ARouter.getInstance().inject(this);
-        helloProvider.sayHello("Vergil");
-        helloProvider2.sayHello("Vergil");
 
-        // 2. 使用依赖查找的方式发现服务，主动去发现服务并使用，下面两种方式分别是byName和byType
-        helloProvider3 = ARouter.getInstance().navigation(HelloProvider.class);
-        helloProvider4 = (HelloProvider) ARouter.getInstance().build("/service/hello").navigation();
-        Log.e("eeeeeeeeeeeeee", helloProvider3.sayHello("Vergil1111"));
-        Log.e("eeeeeeeeeeeeee", helloProvider4.sayHello("Vergil2222"));
 
         TextView textView1 = findViewById(R.id.textView1);
         textView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
-                ARouter.getInstance().build("/test/activity").navigation();
-
-//                // 2. 跳转并携带参数
-//                ARouter.getInstance().build("/test/1")
-//                        .withLong("key1", 666L)
-//                        .withString("key3", "888")
+                // 1. 简单跳转
+                RouterUtil.go("/test/activity");
+                // 2. 跳转携带参数
+//                RouterUtil.goWith("/test/activity")
+//                        .withLong("longKey", 0x555555L)
+//                        .withString("stringKey", "66666")
 //                        .navigation();
+                // 3. 跳转携带参数并有ActivityResult
+                RouterUtil.goWith("/test/activity")
+                        .withString("data", "app传过来的内容")
+                        .navigation(MainActivity.this, 100);
+                // 4. 同步调用
+                Map<String, Object> res = RouterUtil.exec(MainActivity.this, "/service/hello");
+                String resV = (String) res.get("one");
+                Toast.makeText(view.getContext(), resV, Toast.LENGTH_LONG).show();
+
+                // 5. 异步调用
+                RouterUtil.execAsync(MainActivity.this, "/service/hello",
+                        new RouterAsyncCallback() {
+                            @Override
+                            public void onStart() {
+
+                            }
+
+                            @Override
+                            public void onSuccess(@Nullable Map<String, Object> result) {
+
+                            }
+
+                            @Override
+                            public void onFailed(@Nullable Map<String, Object> error) {
+
+                            }
+
+                            @Override
+                            public void onFinish() {
+
+                            }
+                        });
             }
         });
-
-
-        //byeProvider.sayBye("ssssss");
     }
 }
