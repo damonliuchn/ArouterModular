@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.masonliu.aroutermodular_base.libplus.arouter.RouterAsyncCallback;
+import com.masonliu.aroutermodular_base.libplus.arouter.provider.RouterAsyncCallback;
 import com.masonliu.aroutermodular_base.libplus.arouter.RouterUtil;
 
 import java.util.Map;
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         textView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 // 1. 简单跳转
                 RouterUtil.go("/test/activity");
                 // 2. 跳转携带参数
@@ -32,16 +33,16 @@ public class MainActivity extends AppCompatActivity {
 //                        .withString("stringKey", "66666")
 //                        .navigation();
                 // 3. 跳转携带参数并有ActivityResult
-                RouterUtil.goWith("/test/activity")
-                        .withString("data", "app传过来的内容")
-                        .navigation(MainActivity.this, 100);
+//                RouterUtil.goWith("/test/activity")
+//                        .withString("data", "app传过来的内容")
+//                        .navigation(MainActivity.this, 100);
                 // 4. 同步调用
-                Map<String, Object> res = RouterUtil.exec(MainActivity.this, "/service/hello");
+                Map<String, Object> res = RouterUtil.exec(MainActivity.this, "/module1/syncMethod");
                 String resV = (String) res.get("one");
                 Toast.makeText(view.getContext(), resV, Toast.LENGTH_LONG).show();
 
                 // 5. 异步调用
-                RouterUtil.execAsync(MainActivity.this, "/service/hello",
+                RouterUtil.execAsync(MainActivity.this, "/module2/asyncMethod",
                         new RouterAsyncCallback() {
                             @Override
                             public void onStart() {

@@ -1,4 +1,4 @@
-package com.masonliu.aroutermodular_base.libplus.arouter;
+package com.masonliu.aroutermodular_base.libplus.arouter.provider;
 
 import android.support.annotation.Nullable;
 

@@ -7,6 +7,11 @@ import android.support.annotation.Nullable;
 
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.masonliu.aroutermodular_base.libplus.arouter.provider.RouterApplicationProvider;
+import com.masonliu.aroutermodular_base.libplus.arouter.provider.RouterAsyncCallback;
+import com.masonliu.aroutermodular_base.libplus.arouter.provider.RouterAsyncCallbackWrapper;
+import com.masonliu.aroutermodular_base.libplus.arouter.provider.RouterAsyncProvider;
+import com.masonliu.aroutermodular_base.libplus.arouter.provider.RouterProvider;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -26,6 +31,8 @@ public class RouterUtil {
         ARouter.printStackTrace();
         //}
         ARouter.init(application);
+        //
+
     }
 
     public static Map<String, Object> exec(@Nullable Activity source, String pathQuery) {
@@ -34,12 +41,27 @@ public class RouterUtil {
             Uri uri = Uri.parse(url.toString());
             RouterProvider routerService = (RouterProvider) ARouter.getInstance().build(uri).navigation();
             if (routerService != null) {
-                return routerService.doAction(source, url.getPath(), getUrlParams(url));
+                Map<String, String> query = getUrlParams(url);
+                String method = getMethod(query);
+                return routerService.doAction(source, method, query);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void initModuleApplication(Application application, String path) {
+        try {
+            URL url = new URL("http://native" + path);
+            Uri uri = Uri.parse(url.toString());
+            RouterApplicationProvider routerService = (RouterApplicationProvider) ARouter.getInstance().build(uri).navigation();
+            if (routerService != null) {
+                routerService.onCreate(application);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void execAsync(@Nullable Activity source, String pathQuery, RouterAsyncCallback callback) {
@@ -49,7 +71,9 @@ public class RouterUtil {
             Uri uri = Uri.parse(url.toString());
             RouterAsyncProvider routerService = (RouterAsyncProvider) ARouter.getInstance().build(uri).navigation();
             if (routerService != null) {
-                routerService.doAction(source, url.getPath(), getUrlParams(url), RouterAsyncCallbackWrapper.newInstance(callback));
+                Map<String, String> query = getUrlParams(url);
+                String method = getMethod(query);
+                routerService.doAction(source, method, query, RouterAsyncCallbackWrapper.newInstance(callback));
             } else {
                 if (callback != null) {
                     error.put("errorMsg", "async service not found");
@@ -95,5 +119,13 @@ public class RouterUtil {
             }
         }
         return query_pairs;
+    }
+
+    private static String getMethod(Map<String, String> query) {
+        String method = query.get("method");
+        if (method == null || method.length() == 0) {
+            method = "default";
+        }
+        return method;
     }
 }

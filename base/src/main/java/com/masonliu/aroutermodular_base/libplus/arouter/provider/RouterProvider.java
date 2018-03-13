@@ -1,4 +1,4 @@
-package com.masonliu.aroutermodular_base.libplus.arouter;
+package com.masonliu.aroutermodular_base.libplus.arouter.provider;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,11 +11,11 @@ import java.util.Map;
 /**
  * Created by masonliu on 2017/4/13.
  */
-public abstract class RouterAsyncProvider implements IProvider {
+public abstract class RouterProvider implements IProvider {
     private Context context;
 
     @Nullable
-    public abstract void doAction(@Nullable Activity activity, String path, Map<String, String> params, RouterAsyncCallbackWrapper callback);
+    public abstract Map<String, Object> doAction(@Nullable Activity activity, String method, Map<String, String> params);
 
     @Override
     public void init(Context context) {

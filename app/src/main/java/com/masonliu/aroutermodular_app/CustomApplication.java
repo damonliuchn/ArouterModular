@@ -3,7 +3,6 @@ package com.masonliu.aroutermodular_app;
 
 import android.app.Application;
 
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.masonliu.aroutermodular_base.libplus.arouter.RouterUtil;
 
 public class CustomApplication extends Application {
@@ -11,5 +10,8 @@ public class CustomApplication extends Application {
     public void onCreate() {
         super.onCreate();
         RouterUtil.init(this);
+
+        RouterUtil.initModuleApplication(this, "/module2/application");
+        //更优雅的处理module的application初始化是处理RouteApplication注解
     }
 }
