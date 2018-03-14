@@ -1,21 +1,27 @@
-
-
 >基于arouter实现Android模块化方案
+# 一、模块化优势：
+- 多团队并行开发测试；
+- 模块间解耦、重用；
+- 可单独编译打包某一模块，提升开发效率
 
-# 一、模块化架构图
-
+# 二、模块化架构图
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/1.png)
+使用方式：
+- 各模块作为Module，所有模块代码都在同一Project
+- 各模块都在独立的Project内
 
-# 二、模块化需求介绍
-### 1、页面跳转
-通过指定path实现
-### 2、模块调用
+# 三、模块化需求介绍
+### 1、模块隔离，去除强依赖
+- 每个模块都需要指定一个资源前缀resourcePrefix，以避免集成后资源名冲突的问题，包名也需要添加模块名，避免class重名
+- runtimeOnly 避免在模块调试时强引用其他模块
+### 2、页面跳转
+### 3、模块调用
 
-1、通过在Router Module里注册Provider实现
-3、为避免繁琐的增加Provider，可以封装CommonProvider
-4、还可以使用反射进行调用，但不推荐这样做，这样模块就没有暴露服务的契约了，当被调用者发生改变，则使用反射的调用方无法使用。
+## 思路
+- 服务化：注册服务、查找服务
+- 使用反射进行调用，但不推荐这样做，这样模块就没有暴露服务的契约了，当被调用者发生改变，则使用反射的调用方无法使用。
 
-# 三、注册服务
+# 四、注册服务
 >各个模块如果想对外提供某些功能，则需要向服务中心注册自己的提供的服务
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/2.png)
 
@@ -23,7 +29,7 @@
 - 手动注册：在通过引用provider方式使用时，需要将provider接口手动放在base或router module里，我们称之为手动注册
 ![](https://raw.githubusercontent.com/MasonLiuChn/ArouterModular/master/app/doc/3.png)
 
-# 四、发现服务(都需要强依赖Class，无法应用在模块化解耦上)
+# 五、发现服务(都需要强依赖Class，无法应用在模块化解耦上)
 >一个模块想使用其他模块的功能则需要到服务中心查找服务
 - 使用依赖注入的方式发现服务,通过注解标注字段,即可使用，无需主动获取
 ```java
@@ -43,7 +49,7 @@ helloProvider3 = ARouter.getInstance().navigation(HelloProvider.class);
 helloProvider4 = (HelloProvider) ARouter.getInstance().build("/service/hello").navigation();
 ```
 
-# 五、去除依赖发现服务，实现模块化需求
+# 六、去除依赖发现服务，实现模块化需求
 ```java
                 // 1. 简单跳转
                 RouterUtil.go("/test/activity");
@@ -85,6 +91,13 @@ helloProvider4 = (HelloProvider) ARouter.getInstance().build("/service/hello").n
                             }
                         });
 ```
+# 七、模块中Application初始化
+
+# 八、重复依赖问题
+
+模块化的过程中我们常常会遇到重复依赖的问题，如果是通过 maven 依赖， gradle 会自动帮我们找出新版本，而抛弃老版本的重复依赖。重复的代码需要抽离到下层组件中。如果是通过jar、aar依赖 则需要上传maven统一管理，或者抽离到下层组件中。
+
+
 
 ---
 
