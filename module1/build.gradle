@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: '../apt.gradle'
+apply from: 'https://raw.githubusercontent.com/MasonLiuChn/MasonMavenRepository/maven/releases/download/arouter.gradle'
 android {
     compileSdkVersion 26
 
