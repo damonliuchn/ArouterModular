@@ -1,0 +1,17 @@
+apply plugin: 'com.alibaba.arouter'
+
+android {
+    defaultConfig {
+        //arouter配置
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+}
+
+dependencies {
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
+    api 'com.alibaba:arouter-api:1.4.1'
+}
